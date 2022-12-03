@@ -47,8 +47,6 @@ print(listaB)
 
 
 
-
-
 recursive.binary <- function(n){
   if(n>1){
     recursive.binary(as.integer(n/2))

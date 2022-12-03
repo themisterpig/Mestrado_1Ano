@@ -1,4 +1,4 @@
-'''Exercicio for loop'''
+#Exercicio for loop
 
 fruits = c("Banana","Apple","Mango","Pear","Kiwi")
 

@@ -4,18 +4,27 @@ newdata <- trees[order(trees$Height),]
 newdata
 newdata <-trees[order(-trees$Height),]
 
-sort(Sepal.Length)
-newdata <- iris[order(Sepal.Length), ]
+iris
+newdata <- iris[order(iris$Sepal.Length), ]
+newdata
 
-iris[order(-iris$Sepal.Length,iris$Sepal.Width),]
+newdata <- iris[order(-iris$Sepal.Length,iris$Sepal.Width),]
+newdata
+
 iris
 
 
-aggregate ( mtcars , by = list ( mtcars $cyl , mtcars $vs ) , FUN = mean 
-            
-            
-data(trees)
-head(trees)
 
-x <- c(7,8,9)
-is.vector(x)
+
+aggregate ( mtcars , by = list ( mtcars $cyl , mtcars $vs ) , FUN = mean)
+            
+            
+irisTrain= iris[1:100,]
+irisTrain
+
+irisTest = iris[100:150,]
+irisTest
+
+
+rbind(irisTrain,irisTest)
+
