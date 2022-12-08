@@ -24,6 +24,10 @@ quickhull = function(df){
   points(above, col = "green", pch = 16, cex = 1.5)
   #below points
   points(below, col = "orange", pch = 16, cex = 1.5)
+  
+  max_point = find_distance(p1,p2,sorted)
+  lines(c(max_point$x,p1$x), c(max_point$y,p1$y), col = "red", lwd = 2)
+  lines(c(max_point$x,p2$x), c(max_point$y,p2$y), col = "red", lwd = 2)
 }
 
 
@@ -50,6 +54,24 @@ create_segment = function(p1,p2,df,side){
     return(below)
   }
   
+}
+
+find_distance = function(p1,p2,sorted){
+  max_dist = 0
+  max_point = data.frame(x = c(), y = c())
+  
+  a = p1$y - p2$y
+  b = p2$x - p1$x
+  c = p1$x * p2$x - p2$x*p1$y
+  
+  for (i in 1:nrow(sorted)){
+    dist = abs(a*sorted[i,]$x + b*sorted[i,]$y + c)/sqrt(a*a + b*b)
+    if (dist > max_dist){
+      max_dist = dist
+      max_point = sorted[i,]
+    }
+  }
+  return (max_point)
 }
 
 quickhull(dftest)
