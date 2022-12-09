@@ -19,15 +19,20 @@ quickhull = function(df){
   #plot sorted points
   plot(dftest, type = "p", col = "blue", pch = 16, cex = 1)
   #line between p1 and p2
-  lines(c(p1$x,p2$x), c(p1$y,p2$y), col = "red", lwd = 2)
+  lines(c(p1$x,p2$x), c(p1$y,p2$y), col = "blue", lwd = 2)
   #above points
   points(above, col = "green", pch = 16, cex = 1.5)
   #below points
   points(below, col = "orange", pch = 16, cex = 1.5)
   
-  max_point = find_distance(p1,p2,sorted)
-  lines(c(max_point$x,p1$x), c(max_point$y,p1$y), col = "red", lwd = 2)
-  lines(c(max_point$x,p2$x), c(max_point$y,p2$y), col = "red", lwd = 2)
+  max_point_above = find_distance(p1,p2,above)
+  max_point_below = find_distance(p1,p2,below)
+  lines(c(max_point_above$x,p1$x), c(max_point_above$y,p1$y), col = "red", lwd = 2)
+  lines(c(max_point_above$x,p2$x), c(max_point_above$y,p2$y), col = "red", lwd = 2)
+  lines(c(max_point_below$x,p1$x), c(max_point_below$y,p1$y), col = "red", lwd = 2)
+  lines(c(max_point_below$x,p2$x), c(max_point_below$y,p2$y), col = "red", lwd = 2)
+  
+  
 }
 
 
@@ -74,5 +79,6 @@ find_distance = function(p1,p2,sorted){
   return (max_point)
 }
 
+quickhull2 = function()
 quickhull(dftest)
 
