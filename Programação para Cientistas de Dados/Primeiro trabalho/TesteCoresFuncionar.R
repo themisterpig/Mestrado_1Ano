@@ -26,15 +26,15 @@ quickhull = function(df){
   #below points
   points(below, col = "orange", pch = 16, cex = 1.5)
   
-  #max_point_above = find_distance(p1,p2,above)
-  #max_point_below = find_distance(p1,p2,below)
-  #lines(c(max_point_above$x,p1$x), c(max_point_above$y,p1$y), col = "red", lwd = 2)
-  #lines(c(max_point_above$x,p2$x), c(max_point_above$y,p2$y), col = "red", lwd = 2)
-  #lines(c(max_point_below$x,p1$x), c(max_point_below$y,p1$y), col = "red", lwd = 2)
-  #lines(c(max_point_below$x,p2$x), c(max_point_below$y,p2$y), col = "red", lwd = 2)
+  max_point_above = find_distance(p1,p2,above)
+  max_point_below = find_distance(p1,p2,below)
+  lines(c(max_point_above$x,p1$x), c(max_point_above$y,p1$y), col = "red", lwd = 2)
+  lines(c(max_point_above$x,p2$x), c(max_point_above$y,p2$y), col = "red", lwd = 2)
+  lines(c(max_point_below$x,p1$x), c(max_point_below$y,p1$y), col = "red", lwd = 2)
+  lines(c(max_point_below$x,p2$x), c(max_point_below$y,p2$y), col = "red", lwd = 2)
   
-  convex_hull == convex_hull + quickhull2(p1,p2,above, "above")
-  convex_hull == convex_hull + quickhull2(p1,p2,below, "below")
+  #convex_hull == convex_hull + quickhull2(p1,p2,above, "above")
+  #convex_hull == convex_hull + quickhull2(p1,p2,below, "below")
   
   return(convex_hull)
   

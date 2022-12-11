@@ -1,4 +1,4 @@
-dftest <- data.frame(x = c(1,6,4,2,7,4,5,3), y = c(1,1,6,4,4,6,2,3))
+#dftest <- data.frame(x = c(1,6,4,2,7,4,5,3,4,2), y = c(1,1,6,4,4,6,2,3,4,3))
 
 quickhull = function(df){
   
@@ -17,6 +17,18 @@ quickhull = function(df){
   above = create_segment(p1,p2,sorted,1)
   below = create_segment(p1,p2,sorted,-1)
   
+  
+  max_point_above = find_distance(p1,p2,above)
+  max_point_below = find_distance(p1,p2,below)
+  convex_hull = rbind(convex_hull, max_point_above,max_point_below)
+  
+  convex_hull = quickhull2(convex_hull,sorted)
+  create_lines(convex_hull,p1,p2,above,below,max_point_above,max_point_below)
+  return(convex_hull)
+  
+}
+
+create_lines = function(convex_hull,p1,p2,above,below,max_point_above,max_point_below){
   #plot sorted points
   plot(dftest, type = "p", col = "blue", pch = 16, cex = 1)
   #line between p1 and p2
@@ -26,21 +38,19 @@ quickhull = function(df){
   #below points
   points(below, col = "orange", pch = 16, cex = 1.5)
   
-  max_point_above = find_distance(p1,p2,above)
-  max_point_below = find_distance(p1,p2,below)
   lines(c(max_point_above$x,p1$x), c(max_point_above$y,p1$y), col = "red", lwd = 2)
   lines(c(max_point_above$x,p2$x), c(max_point_above$y,p2$y), col = "red", lwd = 2)
   lines(c(max_point_below$x,p1$x), c(max_point_below$y,p1$y), col = "red", lwd = 2)
   lines(c(max_point_below$x,p2$x), c(max_point_below$y,p2$y), col = "red", lwd = 2)
   
-  convex_hull == convex_hull + quickhull2(p1,p2,above, "above")
-  convex_hull == convex_hull + quickhull2(p1,p2,below, "below")
-  
-  return(convex_hull)
-  
+  points(convex_hull, col = "black", pch = 16, cex = 2)
+
 }
 
 
+create_cluster = function(pontos){
+  cluster = pontos[order(pontos$x),] 
+}
 create_segment = function(p1,p2,df,side){
   above = data.frame(x = c(), y = c())
   below = data.frame(x = c(), y = c())
@@ -75,8 +85,8 @@ find_distance = function(p1,p2,sorted){
   c = p1$x * p2$x - p2$x*p1$y
   
   for (i in 1:nrow(sorted)){
-    dist = abs(a*sorted[i,]+ b*sorted[i,] + c)/sqrt(a*a + b*b)
-    if (dist > max_dist){
+    dist = abs(a*sorted[i,]$x+ b*sorted[i,]$y + c)/sqrt(a*a + b*b)
+    if (length(dist)> 0 && dist > max_dist){
       max_dist = dist
       max_point = sorted[i,]
     }
@@ -84,45 +94,22 @@ find_distance = function(p1,p2,sorted){
   return (max_point)
 }
 
-quickhull2 = function(p1,p2,segment,flag){
-  
-  
-  if(length(segment$x)==0){
-    return(c())
-  }
-  
-  farthest_distance = -1
-  farthest_point =0
-  
-  for(i in 1:nrow(segment)) {       # for-loop over rows
-    #segment[i, ] -> x
-    #segment[,1 ] -> y
-    point = data.frame(x = c(segment[i, ]), y = c(segment[,1 ]))
-    distance = find_distance(p1,p2,point)
+quickhull2 = function(convex_hull,sorted){
+  for(num in 1:nrow(convex_hull)){
+    for(j in 1:nrow(convex_hull)){
+    p1 = data.frame(x = c(convex_hull[num,]$x), y = c(convex_hull[num,]$y))
+    p2 = data.frame(x = c(convex_hull[j,]$x), y = c(convex_hull[j,]$y))
+    convex_hull = rbind(convex_hull,find_distance(p1,p2,sorted)) 
     
-    if(distance > farthest_distance){
-      farthest_distance = distance
-      farthest_point = point
     }
+    
   }
-  segment %>%  filter(x==farthest_point$x | y > farthest_point$y)
-  
-  point1above = create_segment(p1,farthest_point,segment)
-  point1below = create_segment(p1,farthest_point,segment)
-  point2above= create_segment(farthest_point,p2,segment)
-  point2below= create_segment(farthest_point,p2,segment)
-  
-  if(flag == "above"){
-    convex_hull = convex_hull + quickhull2(p1,farthest_point,point1above, "above")
-    convex_hull = convex_hull + quickhull2(farthest_point,p2,point2above, "above")
-  }
-  else{
-    convex_hull = convex_hull + quickhull2(p1,farthest_point,point1below, "below")
-    convex_hull = convex_hull + quickhull2(farthest_point,p2,point2below, "below")
-  }
-  return(convex_hull)
+  return(convex_hull[!duplicated(convex_hull), ])
 }
-  
-  
-print(quickhull(dftest))
+ 
+dftest <- data.frame(x = runif(20,1,10), y = runif(20,1,10))
 
+#valores <- dftest 
+#valores2 <- dftest 
+quickhull(dftest)
+create_cluster(quickhull(dftest))
