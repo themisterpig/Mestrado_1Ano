@@ -103,8 +103,9 @@ quickhull2 = function(convex_hull,sorted){
     convex_hull = rbind(convex_hull,find_distance(p1,p2,sorted)) 
     
     }
-    
   }
+  
+  
   return(convex_hull[!duplicated(convex_hull), ])
 }
  
@@ -113,6 +114,8 @@ dftest <- data.frame(x = runif(30,1,15), y = runif(30,1,15))
 #valores <- dftest 
 #valores2 <- dftest 
 #valores3 <- dftest
+#valores4 = dftest
+#valores5 = dftest
 quickhull(dftest)
 quickhull(valores)
 quickhull(valores3)
