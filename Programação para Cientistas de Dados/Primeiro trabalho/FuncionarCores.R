@@ -5,7 +5,8 @@ quickhull = function(df){
   convex_hull = data.frame(x = c(), y = c())
   
   sorted = df[order(df$x),]
-  
+  sorted2 = df[order(df$x),]
+    
   p1 = sorted[1,]
   p2 = tail(sorted, n =1)
   
@@ -22,15 +23,15 @@ quickhull = function(df){
   max_point_below = find_distance(p1,p2,below)
   convex_hull = rbind(convex_hull, max_point_above,max_point_below)
   
-  convex_hull = quickhull2(convex_hull,sorted)
-  create_lines(convex_hull,p1,p2,above,below,max_point_above,max_point_below)
+  convex_hull = quickhull2(convex_hull,sorted2)
+  create_lines(convex_hull,p1,p2,above,below,max_point_above,max_point_below,sorted2)
   return(convex_hull)
   
 }
 
-create_lines = function(convex_hull,p1,p2,above,below,max_point_above,max_point_below){
+create_lines = function(convex_hull,p1,p2,above,below,max_point_above,max_point_below,sorted){
   #plot sorted points
-  plot(dftest, type = "p", col = "blue", pch = 16, cex = 1)
+  plot(sorted, type = "p", col = "blue", pch = 16, cex = 1)
   #line between p1 and p2
   lines(c(p1$x,p2$x), c(p1$y,p2$y), col = "blue", lwd = 2)
   #above points
@@ -107,9 +108,13 @@ quickhull2 = function(convex_hull,sorted){
   return(convex_hull[!duplicated(convex_hull), ])
 }
  
-dftest <- data.frame(x = runif(20,1,10), y = runif(20,1,10))
+dftest <- data.frame(x = runif(30,1,15), y = runif(30,1,15))
 
 #valores <- dftest 
 #valores2 <- dftest 
+#valores3 <- dftest
 quickhull(dftest)
+quickhull(valores)
+quickhull(valores3)
+
 create_cluster(quickhull(dftest))
