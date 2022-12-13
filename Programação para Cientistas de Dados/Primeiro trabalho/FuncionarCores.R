@@ -49,9 +49,6 @@ create_lines = function(convex_hull,p1,p2,above,below,max_point_above,max_point_
 }
 
 
-create_cluster = function(pontos){
-  cluster = pontos[order(pontos$x),] 
-}
 create_segment = function(p1,p2,df,side){
   above = data.frame(x = c(), y = c())
   below = data.frame(x = c(), y = c())
