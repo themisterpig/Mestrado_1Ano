@@ -106,7 +106,7 @@ quickhull2 = function(convex_hull,sorted){
   return(convex_hull[!duplicated(convex_hull), ])
 }
  
-dftest <- data.frame(x = runif(30,1,15), y = runif(30,1,15))
+dftest <- data.frame(x = runif(50,1,50), y = runif(50,1,50))
 
 #valores <- dftest 
 #valores2 <- dftest 
