@@ -23,7 +23,9 @@ quickhull = function(df){
   max_point_below = find_distance(p1,p2,below)
   convex_hull = rbind(convex_hull, max_point_above,max_point_below)
   
-  convex_hull = quickhull2(convex_hull,sorted2)
+  convex_hull = quickhull2(convex_hull,above)
+  convex_hull = quickhull2(convex_hull,below)
+  
   create_lines(convex_hull,p1,p2,above,below,max_point_above,max_point_below,sorted2)
   return(convex_hull)
   
@@ -92,12 +94,12 @@ find_distance = function(p1,p2,sorted){
   return (max_point)
 }
 
-quickhull2 = function(convex_hull,sorted){
+quickhull2 = function(convex_hull,side){
   for(num in 1:nrow(convex_hull)){
     for(j in 1:nrow(convex_hull)){
     p1 = data.frame(x = c(convex_hull[num,]$x), y = c(convex_hull[num,]$y))
     p2 = data.frame(x = c(convex_hull[j,]$x), y = c(convex_hull[j,]$y))
-    convex_hull = rbind(convex_hull,find_distance(p1,p2,sorted)) 
+    convex_hull = rbind(convex_hull,find_distance(p1,p2,side)) 
     
     }
   }
