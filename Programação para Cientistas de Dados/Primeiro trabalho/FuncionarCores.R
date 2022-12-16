@@ -19,27 +19,53 @@ quickhull = function(df){
   below = create_segment(p1,p2,sorted,-1)
   
   
+ 
+  
   max_point_above = find_distance(p1,p2,above)
   max_point_below = find_distance(p1,p2,below)
+  
+  above = insideTriangle(p1,p2,max_point_above,create_segment(p1,p2,sorted,1))
+  below = insideTriangle(p1,p2,max_point_below,create_segment(p1,p2,sorted,-1))
+  
+  
   convex_hull = rbind(convex_hull, max_point_above,max_point_below)
   
+
   convex_hull = quickhull2(convex_hull,above)
   convex_hull = quickhull2(convex_hull,below)
+  
+  #convex_hull = finalCheck(convex_hull)
   
   create_lines(convex_hull,p1,p2,above,below,max_point_above,max_point_below,sorted2)
   return(convex_hull)
   
 }
+insideTriangle <- function(p1, p2, p3, points) {
+  # Next, create a matrix with the coordinates of the vertices of the triangle
+  triangle <- matrix(c(p1$x, p1$y, p2$x, p2$y, p3$x,p3$y), ncol = 2, byrow = TRUE)
+  
+  # Use the point.in.polygon() function to check which points from the data frame are inside the triangle
+  inside <- sp::point.in.polygon(points$x, points$y, triangle[,1], triangle[,2])
+  
+  # Use the resulting logical vector to subset the data frame and exclude the points that are inside the triangle
+  points <- points[!inside, ]
+  points = rbind(points,p1,p2,p3)
+  
+  return(points[!duplicated(points), ])
+}
+
+
 
 create_lines = function(convex_hull,p1,p2,above,below,max_point_above,max_point_below,sorted){
   #plot sorted points
-  plot(sorted, type = "p", col = "blue", pch = 16, cex = 1)
-  #line between p1 and p2
-  lines(c(p1$x,p2$x), c(p1$y,p2$y), col = "blue", lwd = 2)
+  plot(dftest, type = "p", col = "blue", pch = 16, cex = 1.5)
   #above points
   points(above, col = "green", pch = 16, cex = 1.5)
   #below points
   points(below, col = "orange", pch = 16, cex = 1.5)
+  #line between p1 and p2
+  lines(c(p1$x,p2$x), c(p1$y,p2$y), col = "blue", lwd = 2)
+ 
   
   lines(c(max_point_above$x,p1$x), c(max_point_above$y,p1$y), col = "red", lwd = 2)
   lines(c(max_point_above$x,p2$x), c(max_point_above$y,p2$y), col = "red", lwd = 2)
@@ -47,7 +73,10 @@ create_lines = function(convex_hull,p1,p2,above,below,max_point_above,max_point_
   lines(c(max_point_below$x,p2$x), c(max_point_below$y,p2$y), col = "red", lwd = 2)
   
   points(convex_hull, col = "black", pch = 16, cex = 2)
-
+  points(p1, col = "black", pch = 16, cex = 2.5)
+  points(p2, col = "black", pch = 16, cex = 2.5)
+  points(max_point_above, col = "red", pch = 16, cex = 2.5)
+  points(max_point_below, col = "red", pch = 16, cex = 2.5)
 }
 
 
@@ -86,7 +115,7 @@ find_distance = function(p1,p2,sorted){
   
   for (i in 1:nrow(sorted)){
     dist = abs(a*sorted[i,]$x+ b*sorted[i,]$y + c)/sqrt(a*a + b*b)
-    if (length(dist)> 0 && dist > max_dist){
+    if (!is.na(dist) && length(dist)> 0 && dist > max_dist){
       max_dist = dist
       max_point = sorted[i,]
     }
@@ -97,24 +126,43 @@ find_distance = function(p1,p2,sorted){
 quickhull2 = function(convex_hull,side){
   for(num in 1:nrow(convex_hull)){
     for(j in 1:nrow(convex_hull)){
-    p1 = data.frame(x = c(convex_hull[num,]$x), y = c(convex_hull[num,]$y))
-    p2 = data.frame(x = c(convex_hull[j,]$x), y = c(convex_hull[j,]$y))
-    convex_hull = rbind(convex_hull,find_distance(p1,p2,side)) 
+      if(j != num){
+        p1 = data.frame(x = c(convex_hull[num,]$x), y = c(convex_hull[num,]$y))
+        p2 = data.frame(x = c(convex_hull[j,]$x), y = c(convex_hull[j,]$y))
+        p3 = find_distance(p1,p2,side)
+        side = insideTriangle(p1,p2,p3,side)
+        convex_hull = rbind(convex_hull[!duplicated(convex_hull), ],p3)
+      }
+   
     
     }
   }
+  convex_hull = rbind(convex_hull,side)
   
   
-  return(convex_hull[!duplicated(convex_hull), ])
+  return(convex_hull)
 }
  
-dftest <- data.frame(x = runif(50,1,50), y = runif(50,1,50))
 
-#valores <- dftest 
-#valores2 <- dftest 
-#valores3 <- dftest
-#valores4 = dftest
-#valores5 = dftest
+finalCheck = function(convex_hull){
+  for(num in 1:nrow(convex_hull)){
+    for(j in 1:nrow(convex_hull)){
+      for(i in 1:nrow(convex_hull)){
+        if( i!=j && j!=num && i!=num && !is.na(convex_hull)){
+          p1 = data.frame(x = convex_hull[i,]$x, y = convex_hull[i,]$y)
+          p2 = data.frame(x = convex_hull[j,]$x, y = convex_hull[j,]$y)
+          p3 = data.frame(x = convex_hull[num,]$x, y = convex_hull[num,]$y)
+          convex_hull = insideTriangle(p1,p2,p3,convex_hull)
+          
+        }
+      }
+    }
+      
+  }
+  return(convex_hull)
+}
+dftest <- data.frame(x = runif(50,1,5), y = runif(50,1,5))
+
 quickhull(dftest)
 quickhull(valores)
 quickhull(valores3)
