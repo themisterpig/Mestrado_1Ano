@@ -5,7 +5,7 @@ quickhull = function(df){
   convex_hull = data.frame(x = c(), y = c())
   
   sorted = df[order(df$x),]
-  sorted2 = df[order(df$x),]
+  
     
   p1 = sorted[1,]
   p2 = tail(sorted, n =1)
@@ -144,6 +144,23 @@ quickhull2 = function(convex_hull,side){
 }
  
 
+finalCheck = function(convex_hull){
+  for(num in 1:nrow(convex_hull)){
+    for(j in 1:nrow(convex_hull)){
+      for(i in 1:nrow(convex_hull)){
+        if( i!=j && j!=num && i!=num && !is.na(convex_hull)){
+          p1 = data.frame(x = convex_hull[i,]$x, y = convex_hull[i,]$y)
+          p2 = data.frame(x = convex_hull[j,]$x, y = convex_hull[j,]$y)
+          p3 = data.frame(x = convex_hull[num,]$x, y = convex_hull[num,]$y)
+          convex_hull = insideTriangle(p1,p2,p3,convex_hull)
+          
+        }
+      }
+    }
+      
+  }
+  return(convex_hull)
+}
 dftest <- data.frame(x = runif(50,1,5), y = runif(50,1,5))
 
 quickhull(dftest)
