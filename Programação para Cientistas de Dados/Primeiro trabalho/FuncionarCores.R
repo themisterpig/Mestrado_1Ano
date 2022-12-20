@@ -30,8 +30,6 @@ quickhull = function(df){
   convex_hull = quickhull2(convex_hull,above)
   convex_hull = quickhull2(convex_hull,below)
   
-  #convex_hull = finalCheck(convex_hull)
-  
   create_lines(convex_hull,p1,p2,above,below,max_point_above,max_point_below,sorted2)
   return(convex_hull)
   
@@ -127,7 +125,6 @@ quickhull2 = function(convex_hull,side){
         p2 = data.frame(x = c(convex_hull[j,]$x), y = c(convex_hull[j,]$y))
         p3 = find_distance(p1,p2,side)
         side = insideTriangle(p1,p2,p3,side)
-        side = rbind(side)
         convex_hull = rbind(convex_hull[!duplicated(convex_hull), ],p3)
       }
    
@@ -141,23 +138,7 @@ quickhull2 = function(convex_hull,side){
 }
  
 
-finalCheck = function(convex_hull){
-  for(num in 1:nrow(convex_hull)){
-    for(j in 1:nrow(convex_hull)){
-      for(i in 1:nrow(convex_hull)){
-        if( i!=j && j!=num && i!=num && !is.na(convex_hull)){
-          p1 = data.frame(x = convex_hull[i,]$x, y = convex_hull[i,]$y)
-          p2 = data.frame(x = convex_hull[j,]$x, y = convex_hull[j,]$y)
-          p3 = data.frame(x = convex_hull[num,]$x, y = convex_hull[num,]$y)
-          convex_hull = insideTriangle(p1,p2,p3,convex_hull)
-          
-        }
-      }
-    }
-      
-  }
-  return(convex_hull)
-}
+
 dftest <- data.frame(x = runif(50,1,5), y = runif(50,1,5))
 
 quickhull(dftest)
