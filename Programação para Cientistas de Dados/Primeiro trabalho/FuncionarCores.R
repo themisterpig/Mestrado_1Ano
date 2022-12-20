@@ -6,7 +6,6 @@ quickhull = function(df){
   
   sorted = df[order(df$x),]
   
-    
   p1 = sorted[1,]
   p2 = tail(sorted, n =1)
   
@@ -17,9 +16,6 @@ quickhull = function(df){
   
   above = create_segment(p1,p2,sorted,1)
   below = create_segment(p1,p2,sorted,-1)
-  
-  
- 
   
   max_point_above = find_distance(p1,p2,above)
   max_point_below = find_distance(p1,p2,below)
@@ -131,6 +127,7 @@ quickhull2 = function(convex_hull,side){
         p2 = data.frame(x = c(convex_hull[j,]$x), y = c(convex_hull[j,]$y))
         p3 = find_distance(p1,p2,side)
         side = insideTriangle(p1,p2,p3,side)
+        side = rbind(side)
         convex_hull = rbind(convex_hull[!duplicated(convex_hull), ],p3)
       }
    
